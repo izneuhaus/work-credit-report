@@ -1,3 +1,9 @@
+/* #app * {
+    font-size: 3vw !important;
+} */
+
+[v-cloak] { display: none; }
+
 #app {
     width: 70%;
     margin: 0 auto;
@@ -8,7 +14,25 @@
     float: right;
 }
 
-#title {
+#submitDashboard {
+    height: 20%;
+}
+
+#backToReport {
+    padding: 20px;
+    text-align: center;
+}
+
+th, td {
+    vertical-align: middle !important;
+    text-align: center !important;
+}
+
+.hours-td {
+    text-align: center;
+}
+
+.title {
     text-align: center;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -44,4 +68,54 @@
 
 .negative {
     background-color: #ff5959;
+}
+
+.ldBar-label {
+    display: none;
+}
+
+.progress-label{
+    position:absolute;
+    top:50%;
+    left:50%;
+    -webkit-transform:translate(-50%,-50%);
+    transform:translate(-50%,-50%);
+    text-shadow:0 0 3px #fff
+}
+
+.progress-other-label{
+    position:absolute;
+    top:50%;
+    left:50%;
+    -webkit-transform:translate(-50%,-50%);
+    transform:translate(-50%,-50%);
+    text-shadow:0 0 3px #fff
+}
+
+#progressDiv {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+#hoursSummary, #otherSummary {
+    padding-bottom: 25px;
+}
+
+#progressDiv > td {
+    display: inline-block;
+    padding: 50%;
+}
+
+#progressDiv > td > tr {
+    padding: 50%;
+}
+
+#quickSubmitHeader {
+    text-align: center;
+}
+
+label {
+    text-align: center;
 }

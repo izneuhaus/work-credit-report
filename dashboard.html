@@ -1,0 +1,76 @@
+<html>
+<head>
+    <title>RCHC Work Credit Dashboard</title>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="loading-bar/loading-bar.css"/>
+    <script type="text/javascript" src="loading-bar/loading-bar.js"></script>
+
+    <script src="https://static.airtable.com/js/embed/embed_snippet_v1.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div id="app" v-cloak>
+        <div id="quickSubmitView">
+            <div id='quickSubmitHeader' class='title'>
+            </div>
+            <div style="text-align: center">
+                <table id="progressDiv">
+                    <tr>
+                        <td>
+                            <label>House<br />Hours</label>
+                            <div data-hourstype="House" class="hoursProgressDisplay" style="margin:auto;"></div>
+                        </td>
+                        <td>
+                            <label>House<br />Meetings</label>
+                            <div data-othertype="House Meetings" class="otherProgressDisplay" style="margin:auto;"></div>
+                        </td>
+                    </tr>
+                    <tr style="height:25px"></tr>
+                    <tr>
+                        <td>
+                            <label>Collective<br />Hours</label>
+                            <div data-hourstype="Collective" class="hoursProgressDisplay" style="margin:auto;"></div>
+                        </td>
+                        <td>
+                            <label>BOD<br />Meetings</label>
+                            <div data-othertype="BOD Meetings" class="otherProgressDisplay" style="margin:auto;"></div>
+                        </td>
+                    </tr>
+                    <tr style="height:25px"></tr>
+                    <tr>
+                        <td>
+                            <label>Maintenance<br />Hours</label>
+                            <div data-hourstype="Maintenance" class="hoursProgressDisplay" style="margin:auto;"></div>
+                        </td>
+                        <td>
+                            <label>Dinners<br />Prepared</label>
+                            <div data-othertype="Dinners" class="otherProgressDisplay label-center" style="margin:auto;"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <button id="submitDashboard" class="btn btn-success btn-lg btn-block">
+                Submit Time
+            </button>
+            <div id="backToReport">
+                <button class="btn btn-primary">Back to full report</button>
+            </div>
+            <div style="padding-bottom:10%"></div>
+        </div>
+    </div>
+</body>
+</html>
