@@ -1,0 +1,105 @@
+<html>
+<head>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="main.js"></script>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+            <div>
+                <div id="submit">
+                    <button class="btn btn-success">Submit Time</button>
+                </div>                
+            </div>
+            <div id="title">
+                    <h3>{{ $data['Report Configuration'].reportTitle }}</h3>
+                </div>
+                <div id="nav">
+                    <ul class="nav nav-pills justify-content-center">
+                        <a class="nav-item nav-link active" href="#" id="report">Current Hours Report</a>
+                        <a class="nav-item nav-link" href="#" id="history">Submission History</a>
+                        <a class="nav-item nav-link" href="#" data-toggle="modal" data-target="#help">Help</a>
+                    </ul>
+                </div>
+        <div id="reportView">
+            <div class="card" v-for="(memberData, houseName, index) in this['Member Lookup']">
+                <div class="card-header" v-bind:id="'header' + index" data-toggle="collapse" v-bind:data-target="'#collapse' + index">
+                    <h5 class="mb-0">
+                        <span aria-expanded="true" v-bind:aria-controls="'#collapse' + index">
+                            {{ houseName }}
+                        </span>
+                    </h5>
+                </div>
+                    <div v-bind:id="'collapse' + index" class="collapse show" v-bind:aria-labelledby="'header' + index" data-parent="#accordion">
+                        <div class="card-body">
+                            <table class="table">
+                                <thead class="table-primary">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Room</th>
+                                    <th v-for="type in hourTypes">{{ type }} Hours</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in memberData">
+                                    <td>{{ item['Name'] }}</td>
+                                    <td>{{ item['Room'] }}</td>
+                                    <td v-for="type in hourTypes" v-bind:class="{
+                                        positive:
+                                            getCurrentHours(item, type, 'positive'),
+                                        negative:
+                                            getCurrentHours(item, type, 'negative')
+                                    }">
+                                        <span v-if="item['Required ' + type + ' Hours (' +
+                                            (type === 'Maintenance' ? 'Yearly' : 'Monthly') + ')'] !== 0"
+                                        >
+                                            {{ getCurrentHours(item, type) }} /
+                                            {{
+                                                item['Required ' + type + ' Hours (' +
+                                                (type === 'Maintenance' ? 'Yearly' : 'Monthly') + ')']
+                                            }}
+                                        </span>
+                                        <span v-else>N/A</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div id="help" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <h4>Work Credit Expectations</h4>
+                        <span v-html="$data['Report Configuration'].hoursExplainedHTML"></span>
+                        <br />
+                        <h4>How to read this report</h4>
+                        <span v-html="$data['Report Configuration'].reportExplainedHTML"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="submissionsView" style="display: none">
+        <iframe
+            class="airtable-embed"
+            src="https://airtable.com/embed/shr9X9V2z84gCQvXK?backgroundColor=red&viewControls=on"
+            frameborder="0" onmousewheel=""
+            width="75%" height="80%"
+            style="background: transparent; border: 1px solid #ccc;">
+        </iframe>
+    </div>
+</body>
+</html>

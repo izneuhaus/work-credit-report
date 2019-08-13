@@ -1,0 +1,47 @@
+#app {
+    width: 70%;
+    margin: 0 auto;
+}
+
+#submit {
+    padding: 20px;
+    float: right;
+}
+
+#title {
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    clear: right;
+}
+
+#nav {
+    padding-bottom: 25px;
+}
+
+#submissionsView {
+    text-align: center;
+}
+
+#reportView {
+    padding-bottom: 50px;
+}
+
+.card-header {
+    padding-left: 30px;
+    cursor: pointer;
+    color: white;
+    background-color: #085f63;
+}
+
+.table-primary {
+    background-color: #facf5a;
+}
+
+.positive {
+    background-color: #49beb7;
+}
+
+.negative {
+    background-color: #ff5959;
+}
