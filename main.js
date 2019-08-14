@@ -266,6 +266,10 @@ function loadPersonalizedView(memberId, memberHouse) {
         var currentHours = app.getCurrentHours(memberData, hoursType);
         var requiredHours = memberData['Required ' + hoursType + ' Hours (' + (hoursType === 'Maintenance' ? 'Yearly' : 'Monthly') + ')'];
 
+        if (requiredHours === 0) {
+            $(item).parent().hide();
+        }
+
         var progressPercentage = (currentHours / requiredHours) * 100;
 
         progressDisplay.set(progressPercentage);
@@ -284,6 +288,10 @@ function loadPersonalizedView(memberId, memberHouse) {
 
         var currentOtherProgress = memberData['Completed ' + otherType + ' (Current Month)'] || 0;
         var otherRequirement = memberData['Required ' + otherType + ' (Monthly)'];
+
+        if (otherRequirement === 0) {
+            $(item).parent().hide();
+        }
 
         var progressPercentage = (currentOtherProgress / otherRequirement) * 100;
 
