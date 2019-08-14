@@ -282,7 +282,7 @@ function loadPersonalizedView(memberId, memberHouse) {
         });
         var label = $(item).find('.ldBar-label');
 
-        var currentOtherProgress = 1;
+        var currentOtherProgress = memberData['Completed ' + otherType + ' (Current Month)'] || 0;
         var otherRequirement = memberData['Required ' + otherType + ' (Monthly)'];
 
         var progressPercentage = (currentOtherProgress / otherRequirement) * 100;
