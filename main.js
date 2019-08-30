@@ -51,7 +51,7 @@ $( document ).ready(function() {
                 // Init variables
                 var self = this;
                 var app_id = "appQMJeIAFKV48IKi";
-                var app_key = "appQMJeIAFKV48IKi";
+                var app_key = "key5w0uNiyjNTEZGe";
     
                 var promises = [];
     
