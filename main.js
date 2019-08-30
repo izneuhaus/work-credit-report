@@ -27,7 +27,7 @@ $( document ).ready(function() {
             el: '#app',
             data: function () {
                 var obj = {};
-        
+
                 $.each(tables, function (index, value) {
                     obj[value] = {};
                 });
