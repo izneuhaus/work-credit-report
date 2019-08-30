@@ -11,163 +11,160 @@ $( document ).ready(function() {
     var tables = [
         'House Lookup',
         'Room Lookup',
-        'Member Lookup',
-        'Report Configuration'
-        // , 'Reported Time'
+        'Member Lookup'
     ];
-    
-    app = new Vue({
-        el: '#app',
-        data: function () {
-            var obj = {};
-    
-            $.each(tables, function (index, value) {
-                obj[value] = {};
-            });
-    
-            obj['hourTypes'] = [
-                'House',
-                'Collective',
-                'Maintenance'
-            ];
-    
-            return obj;
-        },
-        mounted: function(){
-            this.loadItems();
-        },
-        updated: function() {
-            $('.collapse').each(function(index, collapse) {
-                var id = $(collapse).get(0).id;
 
-                if (localStorage.getItem(id) === 'false') {
-                    collapseOnLoad(id);
-                }
-            });
-        },
-        methods: {
-            loadItems: function(){
-    
-                // Init variables
-                var self = this;
-                var app_id = "appQMJeIAFKV48IKi";
-                var app_key = "keyjmwAYewm8sDUVi";
-    
-                var promises = [];
-    
+    $.get('help.html', function(data) {
+        $('#helpHtml').html(data);
+    })
+
+    $.getJSON('config.json').then(function(CONFIG) {
+        document.title = CONFIG.reportTitle;
+        $('#title > h3').text(CONFIG.reportTitle);
+        $('#submissionsView').attr('src', 'https://airtable.com/embed/' + CONFIG.airtable.surveyHash + '?backgroundColor=red&viewControls=on')
+
+        app = new Vue({
+            el: '#app',
+            data: function () {
+                var obj = {};
+        
                 $.each(tables, function (index, value) {
-                    promises.push(axios.get(
-                        "https://api.airtable.com/v0/"+app_id+"/"+value+"?view=Grid%20view",
-                        {
-                            headers: { Authorization: "Bearer "+app_key },
-                            tableName: value
-                        }
-                    ))
+                    obj[value] = {};
                 });
-    
-                axios.all(promises).then(function(results){
-                    var memberLookup;
-                    var houseLookup;
-                    var roomLookup;
-
-                    $.each(results, function (index, response) {
-                        var tableName = response.config.tableName;
-                        var rawData = response.data.records;
-                        var formattedData = {};
-
-                        $.each(rawData, function(index, record) {
-                            var fields = record.fields;
-    
-                            if (tableName == tables[0]) {
-                                formattedData[record.id] = fields['Name'];
-                            }
-                            else if (tableName == tables[1]) {
-                                formattedData[record.id] = fields['Room #'];
-                            }
-                            else if (tableName == tables[2]) {
-                                houseLookup = self[tables[0]];
-                                roomLookup = self[tables[1]];
-                                
-                                if (fields['House'] && fields['Room']) {
-                                    fields['House'] = houseLookup[fields['House'][0]];
-                                    fields['Room'] = roomLookup[fields['Room'][0]];
         
-                                    if (formattedData[fields['House']] == undefined) {
-                                        formattedData[fields['House']] = {};
-                                    }
+                obj['hourTypes'] = [
+                    'House',
+                    'Collective',
+                    'Maintenance'
+                ];
         
-                                    formattedData[fields['House']][record.id] = fields;
-                                }   
-                                
-                            }
-                            else if (tableName == tables[3]) {
-                                memberLookup = self[tables[2]];
-
-                                formattedData[fields.configID] = fields.value;
-                            }
-                            // reported time table - using Airtable embed instead
-                            // else if (tableName == tables[4]) {
-                            //     if (fields['House']) {
-                            //         fields['House'] = houseLookup[fields['House'][0]];
-                            //     }
-                            //     if (fields['Name']) {
-                            //         fields['Member'] = memberLookup[fields['House']][fields['Member'][0]]['Name'];
-                            //     }
-
-                            //     formattedData[index] = fields;
-                            // }
-                        });                        
-
-                        self[tableName] = formattedData;
-                    });
-
-                    var url = window.location.pathname;
-                    var filename = url.substring(url.lastIndexOf('/')+1);
-
-                    if (filename == 'dashboard.html') {
-                        if (getUrlParameter('id') && getUrlParameter('house')) {
-                            var memberId = getUrlParameter('id');
-                            var memberHouse = getUrlParameter('house');
-                    
-                            loadPersonalizedView(memberId, memberHouse)
-                        }
+                return obj;
+            },
+            mounted: function(){
+                this.loadItems();
+            },
+            updated: function() {
+                $('.collapse').each(function(index, collapse) {
+                    var id = $(collapse).get(0).id;
+    
+                    if (localStorage.getItem(id) === 'false') {
+                        collapseOnLoad(id);
                     }
-                })
-                .catch(function(error){
-                    console.log(error)
                 });
             },
-            getCurrentHours: function (memberData, type, forStyling) {
-                var currentHoursRequired = memberData[
-                    'Required ' + type + ' Hours (' +
-                    (type === 'Maintenance' ? 'Yearly' : 'Monthly') + ')'
-                ];
-                var hoursDiff = memberData[type + ' Hours Diff'];
-
-                if (forStyling) {
-                    if (forStyling == 'positive') {
-                        return hoursDiff >= 0;
-                    }
-                    if (forStyling == 'negative') {
-                        return hoursDiff < -currentHoursRequired;
-                    }
-                }
-                else {
-                    if (hoursDiff.error) {
-                        return '?';
+            methods: {
+                loadItems: function(){
+        
+                    // Init variables
+                    var self = this;
+                    var app_id = CONFIG.airtable.baseId;
+                    var app_key = CONFIG.airtable.apiKey;
+        
+                    var promises = [];
+        
+                    $.each(tables, function (index, value) {
+                        promises.push(axios.get(
+                            "https://api.airtable.com/v0/"+app_id+"/"+value+"?view=Grid%20view",
+                            {
+                                headers: { Authorization: "Bearer "+app_key },
+                                tableName: value
+                            }
+                        ))
+                    });
+        
+                    axios.all(promises).then(function(results){
+                        var memberLookup;
+                        var houseLookup;
+                        var roomLookup;
+    
+                        $.each(results, function (index, response) {
+                            var tableName = response.config.tableName;
+                            var rawData = response.data.records;
+                            var formattedData = {};
+    
+                            $.each(rawData, function(index, record) {
+                                var fields = record.fields;
+        
+                                if (tableName == tables[0]) {
+                                    formattedData[record.id] = fields['Name'];
+                                }
+                                else if (tableName == tables[1]) {
+                                    formattedData[record.id] = fields['Room #'];
+                                }
+                                else if (tableName == tables[2]) {
+                                    houseLookup = self[tables[0]];
+                                    roomLookup = self[tables[1]];
+                                    
+                                    if (fields['House'] && fields['Room']) {
+                                        fields['House'] = houseLookup[fields['House'][0]];
+                                        fields['Room'] = roomLookup[fields['Room'][0]];
+            
+                                        if (formattedData[fields['House']] == undefined) {
+                                            formattedData[fields['House']] = {};
+                                        }
+            
+                                        formattedData[fields['House']][record.id] = fields;
+                                    }   
+                                    
+                                }
+                                else if (tableName == tables[3]) {
+                                    memberLookup = self[tables[2]];
+    
+                                    formattedData[fields.configID] = fields.value;
+                                }
+                            });                        
+    
+                            self[tableName] = formattedData;
+                        });
+    
+                        var url = window.location.pathname;
+                        var filename = url.substring(url.lastIndexOf('/')+1);
+    
+                        if (filename == 'dashboard.html') {
+                            if (getUrlParameter('id') && getUrlParameter('house')) {
+                                var memberId = getUrlParameter('id');
+                                var memberHouse = getUrlParameter('house');
+                        
+                                loadPersonalizedView(memberId, memberHouse, CONFIG.airtable.surveyHash)
+                            }
+                        }
+                    })
+                    .catch(function(error){
+                        console.log(error)
+                    });
+                },
+                getCurrentHours: function (memberData, type, forStyling) {
+                    var currentHoursRequired = memberData[
+                        'Required ' + type + ' Hours (' +
+                        (type === 'Maintenance' ? 'Yearly' : 'Monthly') + ')'
+                    ];
+                    var hoursDiff = memberData[type + ' Hours Diff'];
+    
+                    if (forStyling) {
+                        if (forStyling == 'positive') {
+                            return hoursDiff >= 0;
+                        }
+                        if (forStyling == 'negative') {
+                            return hoursDiff < -currentHoursRequired;
+                        }
                     }
                     else {
-                        var currentHours = hoursDiff + currentHoursRequired;
-                        
-                        return Math.round(currentHours * 100) / 100;
+                        if (hoursDiff.error) {
+                            return '?';
+                        }
+                        else {
+                            var currentHours = hoursDiff + currentHoursRequired;
+                            
+                            return Math.round(currentHours * 100) / 100;
+                        }
                     }
                 }
             }
-        }
+        });
     });
 
     $('#submit > button').click(function() {
-        window.open(app._data["Report Configuration"].formUrl);
+        window.open("https://airtable.com/" + CONFIG.airtable.surveyHash);
     });
 
     $('#backToReport > button').click(function() {
@@ -203,8 +200,6 @@ $( document ).ready(function() {
         var memberHouse = $(this).data('house');
 
         window.location.href='./dashboard.html?id=' + memberId + '&house=' + memberHouse;
-
-        // loadPersonalizedView(memberId, memberHouse)
     });
 
     $('#reportView').on('shown.bs.collapse', function (e) {
@@ -214,12 +209,6 @@ $( document ).ready(function() {
     $('#reportView').on('hidden.bs.collapse', function (e) {
         localStorage.setItem(e.target.id, false);
     });
-
-    $('#survey').on('load', function() {
-        $('.submitButton').click(function () {
-            console.log('test')
-        })
-    })
 });
 
 function getUrlParameter(sParam) {
@@ -241,7 +230,7 @@ function collapseOnLoad(id) {
     $('#' + id).removeClass('show');
 }
 
-function loadPersonalizedView(memberId, memberHouse) {
+function loadPersonalizedView(memberId, memberHouse, surveyHash) {
     var header = $('#header');
     var reportView = $('#reportView');
     var submissionView = $('#submissionsView');
@@ -251,7 +240,7 @@ function loadPersonalizedView(memberId, memberHouse) {
 
     $('#submitDashboard').click(function() {
         window.location.href = 
-            'https://airtable.com/embed/shr6hdgPnHm7pXmsz?backgroundColor=red' +
+            'https://airtable.com/embed/' + surveyHash + '?backgroundColor=red' +
             '&prefill_Member=' + memberData['Name'] +
             '&prefill_House=' + memberData['House'];
     });
