@@ -81,7 +81,7 @@ $( document ).ready(function() {
                             var tableName = response.config.tableName;
                             var rawData = response.data.records;
                             var formattedData = {};
-    
+
                             $.each(rawData, function(index, record) {
                                 var fields = record.fields;
         
