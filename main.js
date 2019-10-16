@@ -6,8 +6,6 @@ $( document ).ready(function() {
 
     $('.month').html(month);
 
-    $('[data-toggle="tooltip"]').tooltip();
-
     var tables = [
         'House Lookup',
         'Room Lookup',
@@ -19,6 +17,7 @@ $( document ).ready(function() {
     })
 
     $.getJSON('config.json').then(function(CONFIG) {
+
         document.title = CONFIG.reportTitle;
         $('#title > h3').text(CONFIG.reportTitle);
         $('#submissionsView').attr('src', 'https://airtable.com/embed/' + CONFIG.airtable.surveyHash + '?backgroundColor=red&viewControls=on')
@@ -42,6 +41,7 @@ $( document ).ready(function() {
             },
             mounted: function(){
                 this.loadItems();
+                this.collapseTimeRecords();
             },
             updated: function() {
                 $('.collapse').each(function(index, collapse) {
@@ -116,6 +116,8 @@ $( document ).ready(function() {
     
                             self[tableName] = formattedData;
                         });
+
+                        self.collapseTimeRecords();
     
                         var url = window.location.pathname;
                         var filename = url.substring(url.lastIndexOf('/')+1);
@@ -131,6 +133,8 @@ $( document ).ready(function() {
                     })
                     .catch(function(error){
                         console.log(error)
+
+                        $('#title').html('<h1 style="color: red;">Error loading data from Airtable! Please double check your API key and base ID.</h1>')
                     });
                 },
                 getCurrentHours: function (memberData, type, forStyling) {
@@ -158,6 +162,71 @@ $( document ).ready(function() {
                             return Math.round(currentHours * 100) / 100;
                         }
                     }
+                },
+                collapseTimeRecords: function () {
+                    var data = [];
+
+                    $.each(this.$data['Member Lookup'], function(house, members) {
+                        $.each(members, function(id, memData) {
+                            data.push([
+                                '',
+                                '',
+                                memData['Name'],
+                                memData['House'],
+                                memData['Reported House Hours Total'],
+                                'House',
+                                '',
+                                'House Hours Balance Forward'
+                            ])
+
+                            data.push([
+                                '',
+                                '',
+                                memData['Name'],
+                                memData['House'],
+                                memData['Reported Collective Hours Total'],
+                                'Collective',
+                                '',
+                                'Collective Hours Balance Forward'
+                            ])
+
+                            data.push([
+                                '',
+                                '',
+                                memData['Name'],
+                                memData['House'],
+                                memData['Reported Maintenance Hours Total'],
+                                'Maintenance',
+                                '',
+                                'Maintenance Hours Balance Forward'
+                            ])
+                        })
+                    })
+                    
+                    jexcel(document.getElementById('collapsedTable'), {
+                        data:data,
+                        colHeaders: [
+                            'Record ID',
+                            'Timestamp',
+                            'Member',
+                            'House',
+                            'Hours Completed',
+                            'Type of Hours',
+                            'Date of Contribution',
+                            'Description of Work Completed'
+                        ],
+                        colWidths: [
+                            100,
+                            100,
+                            200,
+                            200,
+                            150,
+                            150,
+                            160,
+                            300
+                        ],
+                        editable: false
+                    });
                 }
             }
         });
@@ -298,4 +367,14 @@ function loadPersonalizedView(memberId, memberHouse, surveyHash) {
     reportView.hide();
     submissionView.hide();
     quickSubmitView.show();
+}
+
+function copyCollapsedTable () {
+    var $table = $('#collapsedTable')
+    var cellCountV = $table.find('tr').length
+    var cellCountH = $table.find('.jexcel-header > col').length
+
+    console.log(cellCountH)
+
+    // $('#collapsedTable').jexcel('updateSelection', [cell], [cell]);
 }
