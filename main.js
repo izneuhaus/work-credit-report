@@ -134,7 +134,7 @@ $( document ).ready(function() {
                     .catch(function(error){
                         console.log(error)
 
-                        $('#title').html('<h1 style="color: red;">Error loading data from Airtable! Please double check your API key and base ID.</h1>')
+                        // $('#title').html('<h1 style="color: red;">Error loading data from Airtable! Please double check your API key and base ID.</h1>')
                     });
                 },
                 getCurrentHours: function (memberData, type, forStyling) {
