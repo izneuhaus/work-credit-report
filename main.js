@@ -20,7 +20,7 @@ $( document ).ready(function() {
 
         document.title = CONFIG.reportTitle;
         $('#title > h3').text(CONFIG.reportTitle);
-        $('#submissionsView').attr('src', 'https://airtable.com/embed/' + CONFIG.airtable.surveyHash + '?backgroundColor=red&viewControls=on')
+        $('#submissionsView').attr('src', 'https://airtable.com/embed/' + CONFIG.airtable.timeTableHash + '?backgroundColor=red&viewControls=on')
 
         app = new Vue({
             el: '#app',
@@ -203,80 +203,80 @@ $( document ).ready(function() {
                         })
                     })
                     
-                    jexcel(document.getElementById('collapsedTable'), {
-                        data:data,
-                        colHeaders: [
-                            'Record ID',
-                            'Timestamp',
-                            'Member',
-                            'House',
-                            'Hours Completed',
-                            'Type of Hours',
-                            'Date of Contribution',
-                            'Description of Work Completed'
-                        ],
-                        colWidths: [
-                            100,
-                            100,
-                            200,
-                            200,
-                            150,
-                            150,
-                            160,
-                            300
-                        ],
-                        editable: false
-                    });
+                    // jexcel(document.getElementById('collapsedTable'), {
+                    //     data:data,
+                    //     colHeaders: [
+                    //         'Record ID',
+                    //         'Timestamp',
+                    //         'Member',
+                    //         'House',
+                    //         'Hours Completed',
+                    //         'Type of Hours',
+                    //         'Date of Contribution',
+                    //         'Description of Work Completed'
+                    //     ],
+                    //     colWidths: [
+                    //         100,
+                    //         100,
+                    //         200,
+                    //         200,
+                    //         150,
+                    //         150,
+                    //         160,
+                    //         300
+                    //     ],
+                    //     editable: false
+                    // });
                 }
             }
         });
-    });
 
-    $('#submit > button').click(function() {
-        window.open("https://airtable.com/" + CONFIG.airtable.surveyHash);
-    });
-
-    $('#backToReport > button').click(function() {
-        window.location.href="./index.html";
-    });
-
-    $('.nav-link').click(function() {
-        var id = $(this).attr('id');
-
-        if (id !== 'help') {
-            var reportView = $('#reportView');
-            var submissionView = $('#submissionsView');
-            var quickSubmitView = $('#quickSubmitView');
-
-            $('.nav').find('.active').removeClass('active');
-            $(this).addClass('active');
-
-            if (id == 'history') {
-                reportView.hide();
-                quickSubmitView.hide();
-                submissionView.show();
+        $('#submit > button').click(function() {
+            window.open("https://airtable.com/" + CONFIG.airtable.surveyHash);
+        });
+    
+        $('#backToReport > button').click(function() {
+            window.location.href="./index.html";
+        });
+    
+        $('.nav-link').click(function() {
+            var id = $(this).attr('id');
+    
+            if (id !== 'help') {
+                var reportView = $('#reportView');
+                var submissionView = $('#submissionsView');
+                var quickSubmitView = $('#quickSubmitView');
+    
+                $('.nav').find('.active').removeClass('active');
+                $(this).addClass('active');
+    
+                if (id == 'history') {
+                    reportView.hide();
+                    quickSubmitView.hide();
+                    submissionView.show();
+                }
+                else if (id == 'report') {
+                    submissionView.hide();
+                    quickSubmitView.hide();
+                    reportView.show();
+                }
             }
-            else if (id == 'report') {
-                submissionView.hide();
-                quickSubmitView.hide();
-                reportView.show();
-            }
-        }
-    });    
-
-    $('#reportView').on('click', '.quick-submit', function() {
-        var memberId = $(this).data('id');
-        var memberHouse = $(this).data('house');
-
-        window.location.href='./dashboard.html?id=' + memberId + '&house=' + memberHouse;
-    });
-
-    $('#reportView').on('shown.bs.collapse', function (e) {
-        localStorage.setItem(e.target.id, true);
-    });
-
-    $('#reportView').on('hidden.bs.collapse', function (e) {
-        localStorage.setItem(e.target.id, false);
+        });    
+    
+        $('#reportView').on('click', '.quick-submit', function() {
+            var memberId = $(this).data('id');
+            var memberHouse = $(this).data('house');
+    
+            window.location.href='./dashboard.html?id=' + memberId + '&house=' + memberHouse;
+        });
+    
+        $('#reportView').on('shown.bs.collapse', function (e) {
+            localStorage.setItem(e.target.id, true);
+        });
+    
+        $('#reportView').on('hidden.bs.collapse', function (e) {
+            localStorage.setItem(e.target.id, false);
+        });
     });
 });
 
