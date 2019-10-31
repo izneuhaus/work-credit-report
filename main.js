@@ -12,9 +12,10 @@ $( document ).ready(function() {
         'Member Lookup'
     ];
 
-    $.get('help.html', function(data) {
-        $('#helpHtml').html(data);
-    })
+    // todo - rethink how to make help text to configure
+    // $.get('help.html', function(data) {
+    //     $('#helpHtml').html(data);
+    // })
 
     $.getJSON('config.json').then(function(CONFIG) {
 
@@ -205,31 +206,31 @@ $( document ).ready(function() {
                             ])
                         })
                     })
-                    
-                    // jexcel(document.getElementById('collapsedTable'), {
-                    //     data:data,
-                    //     colHeaders: [
-                    //         'Record ID',
-                    //         'Timestamp',
-                    //         'Member',
-                    //         'House',
-                    //         'Hours Completed',
-                    //         'Type of Hours',
-                    //         'Date of Contribution',
-                    //         'Description of Work Completed'
-                    //     ],
-                    //     colWidths: [
-                    //         100,
-                    //         100,
-                    //         200,
-                    //         200,
-                    //         150,
-                    //         150,
-                    //         160,
-                    //         300
-                    //     ],
-                    //     editable: false
-                    // });
+
+                    jexcel(document.getElementById('collapsedTable'), {
+                        data:data,
+                        colHeaders: [
+                            'Record ID',
+                            'Timestamp',
+                            'Member',
+                            'House',
+                            'Hours Completed',
+                            'Type of Hours',
+                            'Date of Contribution',
+                            'Description of Work Completed'
+                        ],
+                        colWidths: [
+                            100,
+                            100,
+                            200,
+                            200,
+                            150,
+                            150,
+                            160,
+                            300
+                        ],
+                        editable: false
+                    });                 
                 }
             }
         });
