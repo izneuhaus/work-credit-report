@@ -20,7 +20,10 @@ $( document ).ready(function() {
 
         document.title = CONFIG.reportTitle;
         $('#title > h3').text(CONFIG.reportTitle);
-        $('#submissionsView').attr('src', 'https://airtable.com/embed/' + CONFIG.airtable.timeTableHash + '?backgroundColor=red&viewControls=on')
+
+        const submittedViewUrl = 'https://airtable.com/embed/' + CONFIG.airtable.timeTableHash + '?backgroundColor=red&viewControls=on';
+        
+        $('#submissionsView > iframe').attr('src', submittedViewUrl);
 
         app = new Vue({
             el: '#app',
